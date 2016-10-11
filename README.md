@@ -1,17 +1,7 @@
 Simple Ajax Uploader
 ============================
 
-A Javascript plugin for cross-browser Ajax file uploading. Supports multiple file uploading with progress bars.
-
-<a href="https://www.lpology.com/code/ajaxuploader/">Live Demo</a><br />
-<a href="https://www.lpology.com/code/ajaxuploader/docs.php">Full API Reference</a><br />
-<a href="https://www.lpology.com/code/ajaxuploader/progress.php">How to do upload progress bars that work in IE9 (and older)</a><br />
-<a href="https://www.lpology.com/code/ajaxuploader/How-to-Cross-Domain-File-Uploading.php">CORS &mdash; Cross-domain file uploading with Simple Ajax Uploader</a>
-
-### Overview ###
-Simple Ajax Uploader allows developers to easily add Ajax file upload functionality to web applications. It abstracts away standard tasks and browser compatibility issues while preserving wide latitude for custom use.
-
-The project began as a rewrite of Andrew Valum's original Ajax Upload plugin. The goal of the project is make file uploading easy for developers and pleasant for users. Basic usage: 
+A Javascript plugin for cross-browser Ajax file uploading. Supports drag and drop, CORS, and multiple file uploading with progress bars. Works in IE7-9, mobile, and all modern browsers.
 
 ```javascript
 var uploader = new ss.SimpleUpload({
@@ -24,20 +14,28 @@ var uploader = new ss.SimpleUpload({
 ### Features ###
 * Cross-browser -- works in IE7+, Firefox, Chrome, Safari, Opera
 * Supports multiple, concurrent file uploads (even in non-HTML5 browsers)
-* Built-in CORS support (<strong>new in v1.9</strong>)
-* No flash or external CSS -- under 5Kb Javascript file (minified and gzipped)
-* Progress bars in all browsers, including IE9 and older. Built-in support for both:
+* Built-in CORS support
+* Drag and drop file uploads (<strong>new in v2.0</strong>)
+* No flash or external CSS -- a single 6Kb Javascript file (minified and gzipped)
+* Progress bars in all browsers, including IE9 and older. Built-in support for:
     * <a href="http://wiki.nginx.org/HttpUploadProgressModule">Nginx Upload Progress Module</a>
     * <a href="http://www.php.net/manual/en/apc.configuration.php#ini.apc.rfc1867">PHP APC File Upload Progress</a>
+    * <a href="http://php.net/manual/en/session.upload-progress.php">PHP Session Upload Progress</a>
 * Use any HTML element as the upload button
 * No dependencies - use it with or without jQuery
 * Provides individual callback functions for XHR-supported browsers and for browsers that do not support XHR uploads
 * Ability to pass custom headers in request such as the Authorization header
 
-### Server-side file handling ###
-Files are uploaded by POST as either raw form data or regular multipart/form-data, depending on the browser.
+### Frequently Asked Questions ###
+Visit the new <a href="https://www.lpology.com/code/ajaxuploader/faq.php">FAQ</a> for solutions to the most common issues.
 
 ### How to Use ###
+
+<a href="https://www.lpology.com/code/ajaxuploader/">Live Demo</a><br />
+<a href="https://www.lpology.com/code/ajaxuploader/docs.php">API Reference</a><br />
+<a href="https://www.lpology.com/code/ajaxuploader/progress.php">Upload progress bars in IE9 (and older)</a><br />
+<a href="https://www.lpology.com/code/ajaxuploader/How-to-Cross-Domain-File-Uploading.php">CORS &mdash; Cross-domain file uploading with Simple Ajax Uploader</a>
+
 There are two main ways to use the plugin:
 
 <strong>1. Single file uploading</strong> - Only one upload allowed at a time. Progress bar is an element that is re-used for each upload.<br />
@@ -107,11 +105,12 @@ var uploader = new ss.SimpleUpload({
               bar = document.createElement('div'), // actual progress bar
               fileSize = document.createElement('div'), // container for upload file size
               wrapper = document.createElement('div'), // container for this progress bar
-              progressBox = document.getElementById('progressBox'); // on page container for progress bars
+              //declare somewhere: <div id="progressBox"></div> where you want to show the progress-bar(s)
+              progressBox = document.getElementById('progressBox'); //on page container for progress bars
           
           // Assign each element its corresponding class
-          progress.className = 'progress';
-          bar.className = 'bar';            
+          progress.className = 'progress progress-striped';
+          bar.className = 'progress-bar progress-bar-success';
           fileSize.className = 'size';
           wrapper.className = 'wrapper';
           
@@ -144,6 +143,16 @@ var uploader = new ss.SimpleUpload({
 For multiple file uploads, we use an additional function: `setProgressContainer(elem)`. This function designates an element to be removed from the DOM after the upload is completed.
 
 In the example, the element set to be removed with `setProgressContainer()` is the outer container for the progress elements. As a result, progress bars will be removed from the DOM after each upload is completed.
+
+### Form Integration ###
+
+To integrate the plugin with an existing form so that file uploads include all input fields contained in the form, simply pass the form element to the `form` option, or use the `setForm( form )` instance method.
+
+Form integration respects any HTML5 validation attributes. Invalid input values will prevent the upload from occurring.
+
+By default, the plugin will override native submission of the form. Submit attempts will be caught and instead files will be uploaded along with the form data. To disable this behavior, set the `overrideSubmit` to `false`. Setting `overrideSubmit` to `false` will require that the `submit` instance method be manually called in order to upload files and form data together.
+
+<strong>Note:</strong> Only use form integration if a file upload is required to be submitted with the form.
 
 ### Cross-Browser Helper Functions ###
 
@@ -186,6 +195,9 @@ var uploader = new ss.SimpleUpload({
 ```
 
 Returning <code>false</code> from <code>startXHR()</code> and <code>startNonXHR()</code> will prevent the upload from starting, just as it does with <code>onSubmit()</code> and <code>onChange()</code>.
+
+### Server-side file handling ###
+Files are uploaded by POST as either raw form data or regular multipart/form-data, depending on the browser.
 
 ### Using Uploader.php ###
 
@@ -231,8 +243,6 @@ if ($result) {
 
 ### Passing Custom Headers ###
 
-You can pass custom headers in the options upon initialization:
-
 ```javascript
 var uploader = new ss.SimpleUpload({
     customHeaders: {'Authorization': 'my-access-token'},
@@ -240,6 +250,23 @@ var uploader = new ss.SimpleUpload({
 });
 
 ```
+
+### Drag and Drop ###
+
+Enable drag and drop uploading by passing an element to the `dropzone` option to serve as the drop zone:
+
+```javascript
+var uploader = new ss.SimpleUpload({
+      dropzone: 'dragbox', // ID of element to be the drop zone
+      url: 'uploadHandler.php',
+      name: 'uploadfile',
+      responseType: 'json',      
+      onComplete: function(filename, response) {
+          // do something with response...
+      }
+}); 
+```
+
 
 ### License ###
 Released under the MIT license.

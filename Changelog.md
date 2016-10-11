@@ -1,5 +1,150 @@
 Change Log 
 ============================
+### Version 2.5.5 ###
+SimpleAjaxUploader.js:
+* Improved drag detection to work around Firefox bug which causes `dragenter` to fire twice (https://bugzilla.mozilla.org/show_bug.cgi?id=804036)
+* Set `dataTransfer.dropEffect` to `copy` during `dragover` event
+
+Uploader.php:
+* Improved filename sanitation
+* Replaced instances of `array_key_exists` with the faster `isset`
+
+### Version 2.5.4 ###
+SimpleAjaxUploader.js:
+* Added check for parent node inside of `ss.isVisible()` - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/160">#160</a>
+
+### Version 2.5.3 ###
+SimpleAjaxUploader.js:
+* Fixed issue with `dragleave` firing when hovering a child element - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/156">#156</a> - (Special thanks to <a href="https://github.com/JulesDoe">JulesDoe</a> for this)
+
+### Version 2.5.2 ###
+SimpleAjaxUploader.js:
+* Added param check before appending file to allow for manually appended files - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/155">#155</a> (Special thanks to <a href="https://github.com/ablipan">ablipan</a> for this)
+* Fixed check of the internal variable which tracks active upload count to check as integer rather than `length` property - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/150">#150</a> (Special thanks to <a href="https://github.com/benzamin">benzamin</a> for this)
+
+Examples:
+* Cleaned up buggy code in README examples - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/150">#150</a> (Special thanks to <a href="https://github.com/benzamin">benzamin</a> for this)
+
+### Version 2.5.1 ###
+SimpleAjaxUploader.js:
+* When returning `false` from `onSubmit()`, files will now be removed from queue automatically
+
+### Version 2.5.0 ###
+SimpleAjaxUploader.js:
+* Removed additional name parameter from XHR uploads - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/141">#141</a> (Special thanks to <a href="https://github.com/djxhero">djxhero</a> for this one)
+
+### Version 2.4 ###
+SimpleAjaxUploader.js:
+* `multipart` option now defaults to `true`
+* `noParams` option now defaults to `true`
+
+<strong>Note:</strong> One or both of the above changes may be potentially breaking for anyone not using the included Uploader.php class. If this is the case, the fix is to explicitly set both of these options to `false` in your plugin settings. More info: <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/137">#137</a>
+
+* Added form integration functionality -- new option `form` and new method `setForm()`. See README.md for details
+* Added `addButton()` method for adding upload buttons - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/104">#104</a>
+* Added `addDZ()` method for designating an element as a drop zone
+* Added `customProgressHeaders` option to include additional, custom request headers to upload progress update requests in legacy browsers
+* Added `autoCalibrate` option (default `true`). When `autoCalibrate` is `true`, upload buttons which are not visible at initialization will be auto reset with `updatePosition()` upon becoming visible
+* Added `onBlankSubmit()` callback function to be called when user attempts to submit without selecting a file - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/101">#101</a>
+* Improved event handler management for iFrame uploads
+* Reconfigured code structure into more logical format
+
+### Version 2.3 ###
+SimpleAjaxUploader.js:
+* Added UTF-8 encoding to XHR request headers in order to handle all characters/languages - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/126">#126</a>, <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/128">#128</a>
+* Added `encodeHeaders` option to enable/disable UTF-8 encoding of XHR request headers (default is `true`)
+* Removed `encodeCustomHeaders` option, as it is no longer necessary with newly added UTF-8 encoding for all headers
+* `onChange()` callback function now receives the selected file as its 5th argument - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/132">#132</a>
+* Added `withCredentials` option to include user credentials in upload request (default is `false`)
+* Updated `ss.trim()` to use native String.trim if available
+* Drag and drop file selection now correctly honors `return false` from `onChange()` callback function
+* Updated drag and drop functionality to cancel default action for `ondragover` and `ondragenter` per https://msdn.microsoft.com/library/ms536929(v=vs.85).aspx
+
+### Version 2.2.4 ###
+SimpleAjaxUploader.js:
+* Added pre-check for element and class name params to `ss.hasClass`, `ss.addClass`, and `ss.removeClass` methods
+
+Uploader.php:
+* Added `getMimeType($filename)` method for detecting the MIME Content-type of a file using the PHP finfo class
+* Added `isWebImage($filename)` method for checking whether a file is either a GIF, PNG, or JPEG using exif_imagetype
+
+More info about the new methods can be found at: https://www.lpology.com/code/ajaxuploader/phpdocs.php
+
+### Version 2.2.3 ###
+SimpleAjaxUploader.js:
+* Fixed bug in `destroy()` method that was throwing error in property delete loop
+
+### Version 2.2.2 ###
+* Switched to an improved UMD implementation
+* `X-File-Name` request header is now encoded when `encodeCustomHeaders` is set to `true`
+* Added a few small mem leak fixes for IE9 and older
+
+### Version 2.2.1 ###
+SimpleAjaxUploader.js:
+* Added file size as argument passed to `onComplete( filename, response, uploadBtn, size )` callback function
+* Added file size as argument passed to `onError( filename, type, status, statusText, response, uploadBtn, size )` callback function
+* Added file size as argument passed to `onAbort( filename, uploadBtn, size )` callback function
+
+Package Management:
+* Added package.json
+* Added bower.json
+* Added CommonJS support
+
+Documentation:
+* Updated API reference to fix missing and incomplete SimpleAjaxUploader.js API coverage
+
+### Version 2.2 ###
+SimpleAjaxUploader.js:
+* Upload buttons are now clickable for 100% of height
+* Changed mouseover and mouseout events from input field to div wrapper for better responsiveness
+* Fixed bug where file input layout visibility was not returning to invisible on mouseout if `hoverClass` option not defined
+
+Uploader.php:
+* Added check to verify that upload directory exists before checking writability in order to provide more precise error messages
+
+Documentation:
+* Added FAQ: https://www.lpology.com/code/ajaxuploader/faq.php
+
+### Version 2.1.1 ###
+SimpleAjaxUploader.js:
+* Fixed `onChange()` button argument bug - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/115">#115</a> (Special thanks to <a href="https://github.com/zaygraveyard">zaygraveyard</a> for this.)
+
+### Version 2.1 ###
+SimpleAjaxUploader.js:
+* Headers are no longer URL encoded by default. A new option `encodeCustomHeaders` has been added, which when set to `true` will result in custom headers being URL encoded.
+* Added `updatePosition()` method for correcting the position of the upload button after interacting with form - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/105">#105</a> - (Special thanks to <a href="https://github.com/vovayatsyuk">vovayatsyuk</a> for this.)
+* Fixed drop zone element z-index bug
+* Moved verification of drop zone element to inside of constructor
+
+### Version 2.0.1 ###
+Uploader.php:
+* Fixed file name security vulnerability - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/91">#91</a> - (Special thanks to <a href="https://github.com/nickgardos">nickgardos</a> for this)
+
+SimpleAjaxUploader.js:
+* Added support for Cyrillic characters in file names - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/88">#88</a> - (Special thanks to <a href="https://github.com/a-dorosh">a-dorosh</a> for this)
+* Fixed issue with drag class not being removed on drag error
+
+### Version 2.0 ###
+
+SimpleAjaxUploader.js:
+
+* Added support for drag and drop file uploads
+* Added `ss.uploadSetup()` method to set default uploader option values (useful for multiple uploader instances)
+* Added `noParams` option to disable the default behavior of appending the file name to the URL query string
+* Numerous code improvements throughout -- bug fixes, memory usage, etc.
+
+Uploader.php:
+* Refactored into a single class in accordance with one class, one file
+* Made improvements to error detection and handling
+* Added support for reading the `X-File-Name` header as an alternative to query string parameters for sending file names to the server
+* Set default value of the `$uploadName` property to be `"uploadfile"` for consistency with the examples - <a href="https://github.com/LPology/Simple-Ajax-Uploader/issues/72">#72</a>
+
+### Version 1.11 ###
+* Added support for PHP Session Upload Progress for PHP 5.4+ (APC was deprecated in 5.3) 
+* Added `clearQueue()` method which gives the user the ability to clear all files in queue - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/62">#62</a> - (Special thanks to <a href="https://github.com/mouse0270">mouse0270</a> for this one) 
+* Fixed multiple file selection bug - <a href="https://github.com/LPology/Simple-Ajax-Uploader/pull/67">#67</a> - (Special thanks to <a href="https://github.com/genintho">genintho</a> for this) 
+* Fixed bug which could allow form/input elements to be created with invalid name/ID attributes in IE7-9 
+
 ### Version 1.10.1 ###
 * `iframe` and `form` elements are now created with `document.createElement()` rather than the much slower HTML injection method
 * Removed unused variable from `_uploadIframe()`
